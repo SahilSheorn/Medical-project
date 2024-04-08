@@ -1,0 +1,21 @@
+.print-d-none,
+.nav_print,
+.dbdata,
+.hide_dbdata{
+  @media print {
+    display: none;
+  }
+}
+
+.login_bg{
+  background-image: url(./assests/medical3.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: relative;
+  z-index: 1;
+}
+.home_bg{
+  background-image: url(./assests/homebg.avif);
+  background-size: cover;
+  background-repeat: no-repeat;
+}

@@ -1,0 +1,32 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+
+.textt{
+    font-size: 8px;
+}
+
+/* Report.css */
+
+@media print {
+    /* .container {
+       position: relative;
+    }
+ 
+    .Footer {
+       position: fixed;
+       bottom: 0;
+       width: 100%;
+       page-break-before: always;
+    }
+ 
+    .page {
+       page-break-before: always;
+    }
+ 
+    .report {
+       page-break-inside: avoid;
+    } */
+ }
+ 
