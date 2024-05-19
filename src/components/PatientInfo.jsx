@@ -3,12 +3,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './patient.css';
 import { useDispatch } from "react-redux";
 import { setPatientData } from '../redux/formDataSlice';
+import Test from "./Test";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const PatientInfo = () => {
+const PatientInfo = ({ handleTabClick }) => {
     const [formData, setFormData] = useState({
         firstName: '',
         patientName: '',
         dateOfBirth: '',
+        patientId: '',
         age: '',
         gender: '',
         email: '',
@@ -30,6 +34,22 @@ const PatientInfo = () => {
         });
     };
 
+    const handleNextClick = () => {
+        if (!formData.gender) {
+            toast.warn("Please select a gender first.", {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        } else {
+            handleTabClick('Medical Test');
+        }
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(formData);
@@ -37,6 +57,7 @@ const PatientInfo = () => {
 
     return (
         <div className="container print-d-none">
+            <ToastContainer />
             <div className="card">
                 <div className="card-body">
                     <h2 className="card-title">Patient Information</h2>
@@ -61,17 +82,17 @@ const PatientInfo = () => {
                                         />
                                     </td>
                                     <td>
-                                        <label htmlFor="age" className="form-label">
-                                            Age
+                                        <label htmlFor="PatientId" className="form-label">
+                                            Patient Id
                                         </label>
                                     </td>
                                     <td>
                                         <input
-                                            type="number"
+                                            type="text"
                                             className="form-control"
-                                            id="age"
-                                            name="age"
-                                            value={formData.age}
+                                            id="PatientId"
+                                            name="patientId"
+                                            value={formData.patientId}
                                             onChange={handleChange}
                                             required
                                         />
@@ -131,6 +152,22 @@ const PatientInfo = () => {
                                 </tr>
                                 <tr>
                                     <td>
+                                        <label htmlFor="age" className="form-label">
+                                            Age
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="number"
+                                            className="form-control"
+                                            id="age"
+                                            name="age"
+                                            value={formData.age}
+                                            onChange={handleChange}
+                                            required
+                                        />
+                                    </td>
+                                    <td>
                                         <label htmlFor="email" className="form-label">
                                             Email
                                         </label>
@@ -155,7 +192,7 @@ const PatientInfo = () => {
                                     </td>
                                     <td>
                                         <input
-                                            type="text"
+                                            type="number"
                                             className="form-control"
                                             id="phoneNumber"
                                             name="phoneNumber"
@@ -171,7 +208,7 @@ const PatientInfo = () => {
                                     </td>
                                     <td>
                                         <input
-                                            type="text"
+                                            type="number"
                                             className="form-control"
                                             id="zipCode"
                                             name="zipCode"
@@ -197,32 +234,12 @@ const PatientInfo = () => {
                                             required
                                         >
                                             <option value="">Select a Doctor</option>
+                                            <option value="Self">Self</option>
                                             <option value="Dr. Smith">Dr. Smith</option>
                                             <option value="Dr. Johnson">Dr. Johnson</option>
                                             {/* Add more doctor names as needed */}
                                         </select>
                                     </td>
-                                    {/* </tr> */}
-                                    {/* <tr> */}
-                                    {/* <td>
-                                        <label htmlFor="collection" className="form-label">
-                                            Collection
-                                        </label>
-                                    </td>
-                                    <td>
-                                        <select
-                                            className="form-select"
-                                            id="collection"
-                                            name="collection"
-                                            value={formData.collection}
-                                            onChange={handleChange}
-                                            required
-                                        >
-                                            <option value="">Select a Collection</option>
-                                            <option value="Collection A">Collection A</option>
-                                            <option value="Collection B">Collection B</option>
-                                        </select>
-                                    </td> */}
                                 </tr>
                                 <tr>
                                     <td>
@@ -232,7 +249,7 @@ const PatientInfo = () => {
                                     </td>
                                     <td colSpan="3">
                                         <textarea
-                                            className="form-control"
+                                            className="form-control resize-none"
                                             id="medicalHistory"
                                             name="medicalHistory"
                                             value={formData.medicalHistory}
@@ -247,6 +264,15 @@ const PatientInfo = () => {
                             Submit
                         </button> */}
                     </form>
+
+                    <div className="flex justify-end">
+                        <button
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold mt-1 py-2 px-5 rounded"
+                            onClick={handleNextClick}
+                        >
+                            Next
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
