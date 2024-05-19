@@ -12,7 +12,7 @@ function Hero({ user }) {
     const parsedDate = new Date();
 
 
-    
+
     const formattedDate = `${parsedDate.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })} ${parsedDate.getDate()} ${parsedDate.toLocaleString('en-US', { month: 'short' })}, ${parsedDate.getFullYear()}`;
 
     return (
@@ -24,12 +24,14 @@ function Hero({ user }) {
 
                             <div className='patient_details'>
                                 <h1 className='patient_name font-bold text-xl'>{(user?.report?.info?.firstName || "Name")}</h1>
+                                <p>Patient Id : {user?.report?.info?.patientId}</p>
                                 <p>Age : {user?.report?.info?.age}</p>
                                 <p>Sex : {user?.report?.info?.gender}</p>
                             </div>
                         ) : (
                             <div className='patient_details' >
                                 <h1 className='patient_name font-bold text-xl'>{(patientData?.firstName || "Name")}</h1>
+                                <p>Patient ID : {patientData?.patientId}</p>
                                 <p>Age : {patientData?.age}</p>
                                 <p>Sex : {patientData?.gender}</p>
                             </div>
