@@ -17,7 +17,7 @@ function DbData() {
 
    const fetchData = async () => {
       try {
-         const response = await axios.get("https://medical-project-backend-1.onrender.com/users");
+         const response = await axios.get("https://medical-project-backend.onrender.com/users");
          setUserData(response.data);
          console.log("responseData", response.data);
       } catch (error) {

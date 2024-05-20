@@ -17,7 +17,7 @@ function UserDetailsPopup() {
         return;
       }
 
-      const response = await axios.get("https://medical-project-backend-1.onrender.com/details", {
+      const response = await axios.get("https://medical-project-backend.onrender.com/details", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

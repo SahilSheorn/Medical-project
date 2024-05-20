@@ -28,7 +28,7 @@ function Navbar({ handleLogout }) {
         return;
       }
 
-      const response = await axios.get("https://medical-project-backend-1.onrender.com/details", {
+      const response = await axios.get("https://medical-project-backend.onrender.com/details", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -78,7 +78,7 @@ function Navbar({ handleLogout }) {
             }
    
             const response = await axios.put(
-               "https://medical-project-backend-1.onrender.com/update",
+               "https://medical-project-backend.onrender.com/update",
                { username: newUsername },
    
                {
