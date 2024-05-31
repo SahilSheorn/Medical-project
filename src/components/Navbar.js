@@ -12,45 +12,50 @@ function Navbar({ handleLogout }) {
    const [loading, setLoading] = useState(true);
    const [error, setError] = useState(null);
    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+   const [isSettingDropdownOpen, setIsSettingDropdownOpen] = useState(false);
 
    const handleLogoutClick = () => {
       handleLogout();
       navigate("/");
-  };
+   };
 
-  const fetchUserData = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      console.log("Token:", token);
-      if (!token) {
-        setError("Token not found in localStorage");
-        setLoading(false);
-        return;
+   const fetchUserData = async () => {
+      try {
+         const token = localStorage.getItem("token");
+         console.log("Token:", token);
+         if (!token) {
+            setError("Token not found in localStorage");
+            setLoading(false);
+            return;
+         }
+
+         const response = await axios.get("http://localhost:5000/details", {
+            headers: {
+               Authorization: `Bearer ${token}`,
+            },
+         });
+
+         console.log("Response data:", response.data);
+         setUserData(response.data);
+         setLoading(false);
+      } catch (error) {
+         console.error(error);
+         setError("Error fetching user details");
+         setLoading(false);
       }
+   };
 
-      const response = await axios.get("https://medical-project-backend.onrender.com/details", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+   useEffect(() => {
+      fetchUserData();
+   }, []);
 
-      console.log("Response data:", response.data);
-      setUserData(response.data);
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-      setError("Error fetching user details");
-      setLoading(false);
-    }
-  };
+   const toggleDropdown = () => {
+      setIsDropdownOpen(!isDropdownOpen);
+   };
 
-  useEffect(() => {
-    fetchUserData();
-  }, []);
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
+   const toggleSettingDropdown = () => {
+      setIsSettingDropdownOpen(!isSettingDropdownOpen);
+   };
 
 
    const handleEditUsername = async () => {
@@ -66,7 +71,7 @@ function Navbar({ handleLogout }) {
             }
          }
       });
-   
+
       if (newUsername) {
          console.log("New username : ", newUsername)
          try {
@@ -76,42 +81,42 @@ function Navbar({ handleLogout }) {
                setLoading(false);
                return;
             }
-   
+
             const response = await axios.put(
-               "https://medical-project-backend.onrender.com/update",
+               "http://localhost:5000/update",
                { username: newUsername },
-   
+
                {
                   headers: {
                      Authorization: `Bearer ${token}`,
                   },
                }
             );
-   
+
             console.log("Username updated successfully:", response.data.message);
-   
+
             setUserData((prevUserData) => ({
                ...prevUserData,
                username: newUsername,
             }
             ));
-   
+
             Swal.fire({
                icon: 'success',
                title: 'Username Updated',
                text: response.data.message + '. Please log in again with your new username.',
                showConfirmButton: true,
-               allowOutsideClick: false 
+               allowOutsideClick: false
             }).then((result) => {
                if (result.isConfirmed) {
                   handleLogoutClick();
                }
             });
-   
+
          } catch (error) {
             console.error(error);
             setError("Error updating username");
-   
+
             Swal.fire({
                icon: 'error',
                title: 'Error',
@@ -120,7 +125,7 @@ function Navbar({ handleLogout }) {
          }
       }
    };
-   
+
 
    return (
       <nav className="bg-gray-800 shadow-lg nav_print">
@@ -136,12 +141,36 @@ function Navbar({ handleLogout }) {
                </span>
             </Link>
             <div className="flex items-center">
-            <Link
-                  to="/Setting"
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-full shadow-md transition duration-300 ease-in-out mr-4"
-               >
-                  Setting
-               </Link>
+               <div className="relative">
+                  <Link to="/setting" className="flex items-center">
+                     {/* onClick={toggleSettingDropdown} */}
+                     <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-full shadow-md transition duration-300 ease-in-out mr-4 focus:outline-none">
+                        Setting
+                     </button>
+                  </Link>
+                  {/* {isSettingDropdownOpen && (
+                     <div className="dropdown absolute top-full w-max px-5 py-2 right-0 mt-4 bg-white border border-gray-300 rounded-md shadow-lg z-10 animate-fade-in-down">
+                        <div className="flex flex-col">
+                           <p className=" text-center mt-2 px-5 bg-yellow-500 text-white font-semibold rounded py-1">ADD NEW</p>
+                           <Link
+                              to="/setting"
+                              className="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold my-3 py-2 px-4 rounded transition duration-300 ease-in-out"
+                              onClick={() => setIsSettingDropdownOpen(false)}
+                           >
+                              Doctor
+                           </Link>
+                           <Link
+                              to="/address"
+                              className="bg-green-500 hover:bg-green-600 text-white font-semibold mb-3 py-2 px-4 rounded transition duration-300 ease-in-out"
+                              onClick={() => setIsSettingDropdownOpen(false)}
+                           >
+                              Address
+                           </Link>
+                        </div>
+                     </div>
+                  )} */}
+               </div>
+
                <Link
                   to="/dbData"
                   className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-full shadow-md transition duration-300 ease-in-out mr-4"

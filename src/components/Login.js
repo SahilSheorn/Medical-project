@@ -41,7 +41,7 @@ function Login({ switchToRegisterPage, handleLogin }) {
 
       if (formValues && formValues.username && formValues.email) {
          try {
-            const response = await axios.post('https://medical-project-backend.onrender.com/forget-password', formValues);
+            const response = await axios.post('http://localhost:5000/forget-password', formValues);
             console.log(response.data);
             Swal.fire('Success', response.data.message, 'success');
          } catch (error) {

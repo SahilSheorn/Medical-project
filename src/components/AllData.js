@@ -16,7 +16,7 @@ function AllData() {
     }, []);
 
     const handleRegister = async (username, password, email, labName, labAddress) => {
-        const response = await axios.post('https://medical-project-backend.onrender.com/register', {
+        const response = await axios.post('http://localhost:5000/register', {
             username,
             password,
             email,
@@ -29,7 +29,7 @@ function AllData() {
     };
 
     const handleLogin = async (username, password) => {
-        const response = await axios.post('https://medical-project-backend.onrender.com/login',
+        const response = await axios.post('http://localhost:5000/login',
             { username, password });
         console.log(response.data);
         setIsLoggedIn(true);

@@ -10,6 +10,7 @@ import PatientInfo from './components/PatientInfo';
 import Test from './components/Test';
 import Report from './components/Report';
 import Setting from './components/Setting';
+import Address from './components/Address';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -25,7 +26,8 @@ function App() {
         <Route path="/patientinfo" element={<PatientInfo />} />
         <Route path="/test" element={<Test />} />
         <Route path="/report" element={<Report />} />
-        <Route path="/Setting" element={<Setting />} />
+        <Route path="/setting" element={<Setting />} />
+        <Route path="/address" element={<Address />} />
 
         <Route path="/dbData"
           element={
