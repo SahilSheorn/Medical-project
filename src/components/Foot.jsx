@@ -52,5 +52,4 @@ function Foot() {
       </div>
    );
 }
-
 export default Foot;
