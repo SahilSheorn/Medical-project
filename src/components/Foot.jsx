@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { baseUrl } from '../utils/const';
 
 function Foot() {
    const [activeDoctors, setActiveDoctors] = useState([]);
@@ -7,9 +8,9 @@ function Foot() {
 
    const fetchDoctors = async () => {
       try {
-         const response = await axios.get('http://localhost:5000/api/auth/doctor');
+         const response = await axios.get(`${baseUrl}/api/auth/doctor`);
          const sortedData = response.data.data.sort((a, b) => a.drId.localeCompare(b.drId));
-         setDoctors(sortedData); // Set the initial doctors data
+         setDoctors(sortedData);
       } catch (error) {
          console.error('Error fetching doctors data', error);
       }
@@ -20,9 +21,7 @@ function Foot() {
    }, []);
 
    useEffect(() => {
-      // Filter doctors with status 1, 2, or 3
       const filteredDoctors = doctors.filter(doctor => ['1', '2', '3'].includes(doctor.status));
-      // Sort filtered doctors by status (1, 2, 3)
       const sortedFilteredDoctors = filteredDoctors.sort((a, b) => a.status.localeCompare(b.status));
       setActiveDoctors(sortedFilteredDoctors);
    }, [doctors]);

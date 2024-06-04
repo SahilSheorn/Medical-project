@@ -6,6 +6,7 @@ import Navbar from './Navbar';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { baseUrl } from '../utils/const';
 
 const Address = () => {
     const [isModalOpenAddress, setIsModalOpenAddress] = useState(false);
@@ -22,7 +23,7 @@ const Address = () => {
 
     const [isEditingAddress, setIsEditingAddress] = useState(false);
     const [currentAddressIndex, setCurrentAddressIndex] = useState(null);
-    const [isSubmittingAddress , setIsSubmittingAddress] = useState(false);
+    const [isSubmittingAddress, setIsSubmittingAddress] = useState(false);
     const [addressToDelete, setAddressToDelete] = useState(null);
 
     const handleOpenModalAddress = (index = null) => {
@@ -73,7 +74,7 @@ const Address = () => {
         try {
             let res;
             if (isEditingAddress) {
-                res = await fetch(`http://localhost:5000/api/auth/address/${newAddress._id}`, {
+                res = await fetch(`${baseUrl}/api/auth/address/${newAddress._id}`, {
                     method: 'PUT',
                     headers: {
                         "Content-Type": "application/json"
@@ -81,7 +82,7 @@ const Address = () => {
                     body: JSON.stringify({ hno, area, landmark, city, state, status })
                 });
             } else {
-                res = await fetch("http://localhost:5000/api/auth/address", {
+                res = await fetch(`${baseUrl}/api/auth/address`, {
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json"
@@ -116,7 +117,7 @@ const Address = () => {
 
     const fetchAddress = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/auth/address');
+            const response = await axios.get(`${baseUrl}/api/auth/address`);
             const sortedData = response.data.data.sort((a, b) => a.hno.localeCompare(b.hno));
             setAddress(sortedData);
         } catch (error) {
@@ -130,7 +131,7 @@ const Address = () => {
 
     const handleDeleteAddress = async () => {
         try {
-            const response = await axios.delete(`http://localhost:5000/api/auth/address/${addressToDelete._id}`);
+            const response = await axios.delete(`${baseUrl}/api/auth/address/${addressToDelete._id}`);
             if (response.status === 200) {
                 const updatedAddress = address.filter((_, i) => i !== addressToDelete.index);
                 setAddress(updatedAddress);

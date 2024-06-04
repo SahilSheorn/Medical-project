@@ -7,6 +7,7 @@ import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 import 'react-toastify/dist/ReactToastify.css';
+import { baseUrl } from '../utils/const';
 
 const Settings = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -195,7 +196,7 @@ const Settings = () => {
 
             let res;
             if (isEditing) {
-                res = await fetch(`http://localhost:5000/api/auth/doctor/${newDoctor._id}`, {
+                res = await fetch(`${baseUrl}/api/auth/doctor/${newDoctor._id}`, {
                     method: 'PUT',
                     headers: {
                         "Content-Type": "application/json"
@@ -203,7 +204,7 @@ const Settings = () => {
                     body: JSON.stringify(updatedDoctor)
                 });
             } else {
-                res = await fetch("http://localhost:5000/api/auth/doctor", {
+                res = await fetch(`${baseUrl}/api/auth/doctor`, {
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json"
@@ -262,7 +263,7 @@ const Settings = () => {
         try {
             let res;
             if (isEditingAddress) {
-                res = await fetch(`http://localhost:5000/api/auth/address/${newAddress._id}`, {
+                res = await fetch(`${baseUrl}/api/auth/address/${newAddress._id}`, {
                     method: 'PUT',
                     headers: {
                         "Content-Type": "application/json"
@@ -270,7 +271,7 @@ const Settings = () => {
                     body: JSON.stringify({ hno, area, landmark, city, state, status })
                 });
             } else {
-                res = await fetch("http://localhost:5000/api/auth/address", {
+                res = await fetch(`${baseUrl}/api/auth/address`, {
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json"
@@ -305,7 +306,7 @@ const Settings = () => {
 
     const fetchDoctors = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/auth/doctor');
+            const response = await axios.get(`${baseUrl}/api/auth/doctor`);
             const sortedData = response.data.data.sort((a, b) => a.drId.localeCompare(b.drId));
             setDoctors(sortedData); // Set the initial doctors data
 
@@ -328,7 +329,7 @@ const Settings = () => {
 
     const fetchAddress = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/auth/address');
+            const response = await axios.get(`${baseUrl}/api/auth/address`);
             // Filter only active addresses immediately after fetching
             const activeData = response.data.data.filter(addr => addr.status === 'Active');
             // Sort the active addresses
@@ -345,7 +346,7 @@ const Settings = () => {
 
     const handleDelete = async () => {
         try {
-            const response = await axios.delete(`http://localhost:5000/api/auth/doctor/${doctorToDelete._id}`);
+            const response = await axios.delete(`${baseUrl}/api/auth/doctor/${doctorToDelete._id}`);
             if (response.status === 200) {
                 const updatedDoctors = doctors.filter((_, i) => i !== doctorToDelete.index);
                 setDoctors(updatedDoctors);
@@ -362,7 +363,7 @@ const Settings = () => {
 
     const handleDeleteAddress = async () => {
         try {
-            const response = await axios.delete(`http://localhost:5000/api/auth/address/${addressToDelete._id}`);
+            const response = await axios.delete(`${baseUrl}/api/auth/address/${addressToDelete._id}`);
             if (response.status === 200) {
                 const updatedAddress = address.filter((_, i) => i !== addressToDelete.index);
                 setAddress(updatedAddress);

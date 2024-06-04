@@ -5,6 +5,7 @@ import axios from "axios";
 import MedicalLogo from "../assests/medical_logo.png";
 import Profile_text from "./Img/profile_text.png";
 import Swal from 'sweetalert2';
+import { baseUrl } from "../utils/const";
 
 function Navbar({ handleLogout }) {
    const navigate = useNavigate();
@@ -29,7 +30,7 @@ function Navbar({ handleLogout }) {
             return;
          }
 
-         const response = await axios.get("http://localhost:5000/details", {
+         const response = await axios.get(`${baseUrl}/details`, {
             headers: {
                Authorization: `Bearer ${token}`,
             },
@@ -83,7 +84,7 @@ function Navbar({ handleLogout }) {
             }
 
             const response = await axios.put(
-               "http://localhost:5000/update",
+               `${baseUrl}/update`,
                { username: newUsername },
 
                {
