@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import { baseUrl } from '../utils/const';
 
 function Login({ switchToRegisterPage, handleLogin }) {
    const [username, setUsername] = useState('');
@@ -41,7 +42,7 @@ function Login({ switchToRegisterPage, handleLogin }) {
 
       if (formValues && formValues.username && formValues.email) {
          try {
-            const response = await axios.post('http://localhost:5000/forget-password', formValues);
+            const response = await axios.post(`${baseUrl}/forget-password`, formValues);
             console.log(response.data);
             Swal.fire('Success', response.data.message, 'success');
          } catch (error) {

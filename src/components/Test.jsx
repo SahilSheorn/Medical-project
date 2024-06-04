@@ -5,7 +5,8 @@ import { addReportData } from "../redux/formDataSlice";
 import axios from "axios";
 import Select from "react-select"; // Import react-select
 import { Link } from "react-router-dom";
-import GoBack from './Img/goBack.png'
+import GoBack from './Img/goBack.png';
+import { baseUrl } from "../utils/const";
 // import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
 
 
@@ -68,7 +69,7 @@ const Test = ({handleTabClick}) => {
     setinfo(patientData);
   }, [patientData]);
 
-  const baseUrl = "http://localhost:5000/user";
+  const baseUrl = `${baseUrl}/user`;
 
   const handleSaveResult = async () => {
     const combinedData = { info, testResults };

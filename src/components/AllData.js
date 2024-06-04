@@ -3,6 +3,7 @@ import axios from 'axios';
 import Registration from './Registration';
 import Login from './Login';
 import Home from './Home';
+import { baseUrl } from '../utils/const';
 
 function AllData() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -16,7 +17,7 @@ function AllData() {
     }, []);
 
     const handleRegister = async (username, password, email, labName, labAddress) => {
-        const response = await axios.post('http://localhost:5000/register', {
+        const response = await axios.post(`${baseUrl}/register`, {
             username,
             password,
             email,
@@ -29,7 +30,7 @@ function AllData() {
     };
 
     const handleLogin = async (username, password) => {
-        const response = await axios.post('http://localhost:5000/login',
+        const response = await axios.post(`${baseUrl}/login`,
             { username, password });
         console.log(response.data);
         setIsLoggedIn(true);

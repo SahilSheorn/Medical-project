@@ -7,7 +7,9 @@ import PrintComponent from "./PrintComponent";
 import Report from "./Report";
 import Foot from "./Foot";
 import { Link } from "react-router-dom";
-import GoBack from './Img/goBack.png'
+import GoBack from './Img/goBack.png';
+import { baseUrl } from '../utils/const';
+
 
 function DbData() {
    const [userData, setUserData] = useState([]);
@@ -17,7 +19,7 @@ function DbData() {
 
    const fetchData = async () => {
       try {
-         const response = await axios.get("http://localhost:5000/users");
+         const response = await axios.get(`${baseUrl}/users`);
          setUserData(response.data);
          console.log("responseData", response.data);
       } catch (error) {

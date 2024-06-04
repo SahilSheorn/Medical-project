@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { baseUrl } from "../utils/const";
 
 function UserDetailsPopup() {
   const [userData, setUserData] = useState(null);
@@ -17,7 +18,7 @@ function UserDetailsPopup() {
         return;
       }
 
-      const response = await axios.get("http://localhost:5000/details", {
+      const response = await axios.get(`${baseUrl}/details`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

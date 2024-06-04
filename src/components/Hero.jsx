@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import { baseUrl } from '../utils/const';
 
 function Hero({ user }) {
     const isDbDataPath = window.location.pathname.includes("/dbData");
@@ -11,7 +12,7 @@ function Hero({ user }) {
 
     const fetchAddress = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/auth/address');
+            const response = await axios.get(`${baseUrl}/api/auth/address`);
             // Filter only active addresses immediately after fetching
             const activeData = response.data.data.filter(addr => addr.status === 'Active');
             // Sort the active addresses
