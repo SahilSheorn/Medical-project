@@ -13,14 +13,51 @@ const Settings = () => {
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const [doctors, setDoctors] = useState([]);
     const [img, setImg] = useState("");
-    // const [url, setUrl] = useState('');
     const [newDoctor, setNewDoctor] = useState({
         image: '',
         drId: '',
         name: '',
         desigination: '',
-        status: 'Inactive'
+        status: 'Inactive',
+        select: ''
     });
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const doctorsPerPage = 10;
+    const totalPages = Math.ceil(doctors.length / doctorsPerPage);
+    const [highestDrId, setHighestDrId] = useState(0);
+
+    const indexOfLastDoctor = currentPage * doctorsPerPage;
+    const indexOfFirstDoctor = indexOfLastDoctor - doctorsPerPage;
+    const currentDoctors = doctors.slice(indexOfFirstDoctor, indexOfLastDoctor);
+
+    const Pagination = ({ totalPages, currentPage, onPageChange }) => (
+        <div className="flex justify-center my-4">
+            <button
+                onClick={() => onPageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="mx-1 px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+            >
+                Previous
+            </button>
+            {Array.from({ length: totalPages }, (_, index) => (
+                <button
+                    key={index}
+                    onClick={() => onPageChange(index + 1)}
+                    className={`mx-1 px-3 py-1 ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'} rounded`}
+                >
+                    {index + 1}
+                </button>
+            ))}
+            <button
+                onClick={() => onPageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="mx-1 px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+            >
+                Next
+            </button>
+        </div>
+    );
 
     const [isEditing, setIsEditing] = useState(false);
     const [currentDoctorIndex, setCurrentDoctorIndex] = useState(null);
@@ -40,38 +77,6 @@ const Settings = () => {
         status: 'Active',
     });
 
-    // const uploadImg = async (img) => {
-    //     const data = new FormData();
-    //     data.append("file", img);
-    //     data.append("upload_present", "ml_deafult");
-    //     data.append("cloud_name", "drpwwh9rm");
-
-    //     try {
-    //         const response = await fetch("https://api.cloudinary.com/v1_1/drpwwh9rm/image/upload", {
-    //             method: "POST",
-    //             body: data
-    //         });
-    //         const result = await response.json();
-    //         if (result.secure_url) {
-    //             setUrl(result.secure_url);
-    //             return result.secure_url;
-    //         } else {
-    //             throw new Error("Image upload failed");
-    //         }
-    //     } catch (error) {
-    //         console.log(error);
-    //         toast.error("Image upload failed");
-    //         return null;
-    //     }
-    // }
-
-    // const handleImageUpload = async (img) => {
-    //     const imgUrl = await uploadImg(img);
-    //     if (!imgUrl) {
-    //         toast.error("Image upload failed, cannot proceed");
-    //     }
-    // }
-
     const [isEditingAddress, setIsEditingAddress] = useState(false);
     const [currentAddressIndex, setCurrentAddressIndex] = useState(null);
     const [isSubmittingAddress, setIsSubmittingAddress] = useState(false);
@@ -80,12 +85,22 @@ const Settings = () => {
 
     const handleOpenModal = (index = null) => {
         if (index !== null) {
-            setNewDoctor(doctors[index]);
+            const doctor = doctors[index];
+            setNewDoctor({ ...doctor });
             setIsEditing(true);
             setCurrentDoctorIndex(index);
         } else {
-            setNewDoctor({ image: '', drId: '', name: '', desigination: '', status: 'Active' });
+            const nextDrId = (highestDrId + 1).toString().padStart(2, '0');
+            setNewDoctor({
+                image: '',
+                drId: nextDrId,
+                name: '',
+                desigination: '',
+                status: 'Inactive',
+                select: ''
+            });
             setIsEditing(false);
+            setCurrentDoctorIndex(null);
         }
         setIsModalOpen(true);
     };
@@ -120,10 +135,8 @@ const Settings = () => {
     }
 
     const handleImageChange = (e) => {
-        // const file = e.target.files[0];
-        // console.log("data img", img);
         setImg(e.target.files[0]);
-        console.log("data img", img);
+        // console.log("data img", img);
     }
 
     const handleInputChangeAddress = (e) => {
@@ -136,7 +149,6 @@ const Settings = () => {
         setIsSubmitting(true);
 
         try {
-            // Upload image to Cloudinary
             const formData = new FormData();
             formData.append("file", img);
             formData.append("upload_preset", "sahilks");
@@ -152,10 +164,7 @@ const Settings = () => {
                 throw new Error('Image upload failed');
             }
 
-            // Update newDoctor state with the image URL
             const updatedDoctor = { ...newDoctor, image: result.secure_url };
-            console.log("img", result.secure_url);
-
             const { drId, name, desigination, status } = updatedDoctor;
 
             if (!result.secure_url || !drId || !name || !desigination || !status) {
@@ -164,17 +173,26 @@ const Settings = () => {
                 return;
             }
 
-            // Check if there are already 3 active doctors
-            const activeDoctorsCount = doctors.filter((doctor) => doctor.status === 'Active').length;
-            if (status === 'Active' && activeDoctorsCount >= 3) {
-                if (!isEditing || (isEditing && doctors[currentDoctorIndex].status !== 'Active')) {
-                    toast.error('There are already 3 active doctors. Please change the status to inactive or edit an existing doctor.');
-                    setIsSubmitting(false);
-                    return;
-                }
+            // Check for specific statuses
+            if (status === '1' && doctors.some(doctor => doctor.status === '1' && (!isEditing || (isEditing && doctors[currentDoctorIndex].status !== '1')))) {
+                toast.error('1st doctor\'s data is already selected. Please choose another status.');
+                setIsSubmitting(false);
+                return;
+            }
+            if (status === '2' && doctors.some(doctor => doctor.status === '2' && (!isEditing || (isEditing && doctors[currentDoctorIndex].status !== '2')))) {
+                toast.error('2nd doctor\'s data is already selected. Please choose another status.');
+                setIsSubmitting(false);
+                return;
+            }
+            if (status === '3' && doctors.some(doctor => doctor.status === '3' && (!isEditing || (isEditing && doctors[currentDoctorIndex].status !== '3')))) {
+                toast.error('3rd doctor\'s data is already selected. Please choose another status.');
+                setIsSubmitting(false);
+                return;
+            }
+            else {
+                setIsSubmitting(true);
             }
 
-            // Submit form data
             let res;
             if (isEditing) {
                 res = await fetch(`http://localhost:5000/api/auth/doctor/${newDoctor._id}`, {
@@ -206,16 +224,15 @@ const Settings = () => {
                     );
                     setDoctors(updatedDoctors);
                 } else {
-                    setDoctors([...doctors, data]); // Use the returned data to get the new doctor's ID
+                    setDoctors([...doctors, data]);
+                    setHighestDrId(highestDrId + 1);
                 }
                 handleCloseModal();
                 sortDoctors();
             }
-        }
-        catch (error) {
+        } catch (error) {
             toast.error("Failed to submit the doctor data");
-        }
-        finally {
+        } finally {
             setIsSubmitting(false);
         }
     };
@@ -291,6 +308,14 @@ const Settings = () => {
             const response = await axios.get('http://localhost:5000/api/auth/doctor');
             const sortedData = response.data.data.sort((a, b) => a.drId.localeCompare(b.drId));
             setDoctors(sortedData); // Set the initial doctors data
+
+            // Determine the highest drId from the sortedData
+            const highestDrId = sortedData.reduce((maxId, doctor) => {
+                const currentDrId = parseInt(doctor.drId, 10);
+                return currentDrId > maxId ? currentDrId : maxId;
+            }, 0);
+
+            setHighestDrId(highestDrId);
         } catch (error) {
             console.error('Error fetching doctors data', error);
         }
@@ -299,6 +324,7 @@ const Settings = () => {
     useEffect(() => {
         fetchDoctors();
     }, []);
+
 
     const fetchAddress = async () => {
         try {
@@ -446,7 +472,7 @@ const Settings = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {doctors.map((dr, index) => (
+                            {currentDoctors.map((dr, index) => (
                                 <tr className="text-center bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={index}>
                                     <td className="py-4 flex justify-center">
                                         <img src={dr.image} alt={`Dr. ${dr.name}`} className="h-10 w-10 rounded-full object-cover" />
@@ -455,12 +481,13 @@ const Settings = () => {
                                     <td className="py-4">{dr.name}</td>
                                     <td className="py-4">{dr.desigination}</td>
                                     <td className="py-4">
-                                        {dr.status === 'Active' ? (
-                                            <FontAwesomeIcon icon={faCheck} className="text-green-500" />
-                                        ) : (
+                                        {dr.status === 'Inactive' ? (
                                             <FontAwesomeIcon icon={faTimes} className="text-red-500" />
+                                        ) : (
+                                            <span className="text-blue-500">{dr.status === '1' ? '1st' : dr.status === '2' ? '2nd' : '3rd'}</span>
                                         )}
                                     </td>
+
                                     <td className="py-4 px-6">
                                         <button
                                             onClick={() => handleOpenModal(index)}
@@ -479,6 +506,11 @@ const Settings = () => {
                             ))}
                         </tbody>
                     </table>
+                    <Pagination
+                        totalPages={totalPages}
+                        currentPage={currentPage}
+                        onPageChange={setCurrentPage}
+                    />
                 </div>
 
                 <Transition appear show={isModalOpen} as={Fragment}>
@@ -523,9 +555,6 @@ const Settings = () => {
                                                     onChange={handleImageChange}
                                                     className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-indigo-500 sm:text-sm"
                                                 />
-                                                {/* {newDoctor.image && (
-                                                    <img src={newDoctor.image} alt="Doctor" className="mt-2 w-32 h-32 object-cover" />
-                                                )} */}
                                             </div>
                                             <div className="mt-4">
                                                 <label className="block text-sm font-medium text-gray-700">ID</label>
@@ -565,8 +594,11 @@ const Settings = () => {
                                                     onChange={handleInputChange}
                                                     className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-indigo-500 sm:text-sm"
                                                 >
-                                                    <option value="Active">Active</option>
                                                     <option value="Inactive">Inactive</option>
+                                                    {/* <option value="Active">Active</option> */}
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
                                                 </select>
                                             </div>
                                             <div className="mt-4">

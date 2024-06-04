@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
 
 function Foot() {
    const [activeDoctors, setActiveDoctors] = useState([]);
    const [doctors, setDoctors] = useState([]);
-   const reportData = useSelector((state) => state.reportData);
-   // console.log('This is reportData=>', reportData);
 
    const fetchDoctors = async () => {
       try {
@@ -23,37 +20,36 @@ function Foot() {
    }, []);
 
    useEffect(() => {
-      // Filter only active doctors
-      const activeDoctorsData = doctors.filter(doctor => doctor.status === 'Active');
-      setActiveDoctors(activeDoctorsData);
+      // Filter doctors with status 1, 2, or 3
+      const filteredDoctors = doctors.filter(doctor => ['1', '2', '3'].includes(doctor.status));
+      // Sort filtered doctors by status (1, 2, 3)
+      const sortedFilteredDoctors = filteredDoctors.sort((a, b) => a.status.localeCompare(b.status));
+      setActiveDoctors(sortedFilteredDoctors);
    }, [doctors]);
 
    return (
-      <>
-         <div className="Footer pt-4">
-            <div className="container">
-               <div className="row justify-center items-baseline">
-                  {activeDoctors.map((doctor, index) => (
-                     <div key={index} className="col-sm-4">
-                        <div className="text-center grid justify-center">
-                           <div className='flex justify-center items-center'>
-                              <img src={doctor.image} className="stamp w-28" />
-                           </div>
-                           <div>
-                              <p className="text-base">
-                                 <span className="block font-bold">{doctor.name}</span>
-                                 ({doctor.desigination})
-                              </p>
-                           </div>
-
+      <div className="Footer pt-4">
+         <div className="container">
+            <div className="row justify-center items-baseline">
+               {activeDoctors.map((doctor, index) => (
+                  <div key={index} className="col-sm-4">
+                     <div className="text-center grid justify-center">
+                        <div className='flex justify-center items-center'>
+                           <img src={doctor.image} alt={doctor.name} className="stamp w-28" />
+                        </div>
+                        <div>
+                           <p className="text-base">
+                              <span className="block font-bold">{doctor.name}</span>
+                              ({doctor.desigination})
+                           </p>
                         </div>
                      </div>
-                  ))}
-               </div>
-               <hr className="mt-2" />
+                  </div>
+               ))}
             </div>
+            <hr className="mt-2" />
          </div>
-      </>
+      </div>
    );
 }
 
